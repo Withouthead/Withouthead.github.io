@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>CMU-15-445 Lab1记录 - 小毛头31的博客</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="小毛头31的博客"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="小毛头31的博客"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="LRU REPLACEMENT POLICY这个task是做lru替换类，负责跟踪buffer pool中的page"><meta property="og:type" content="blog"><meta property="og:title" content="CMU-15-445 Lab1记录"><meta property="og:url" content="http://example.com/2022/04/15/CMU-15-445-Lab1%E8%AE%B0%E5%BD%95/"><meta property="og:site_name" content="小毛头31的博客"><meta property="og:description" content="LRU REPLACEMENT POLICY这个task是做lru替换类，负责跟踪buffer pool中的page"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="http://example.com/img/og_image.png"><meta property="article:published_time" content="2022-04-15T14:34:28.000Z"><meta property="article:modified_time" content="2022-05-29T16:00:49.739Z"><meta property="article:author" content="xiaomaotou31"><meta property="article:tag" content="CMU-15-445"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2022/04/15/CMU-15-445-Lab1%E8%AE%B0%E5%BD%95/"},"headline":"CMU-15-445 Lab1记录","image":["http://example.com/img/og_image.png"],"datePublished":"2022-04-15T14:34:28.000Z","dateModified":"2022-05-29T16:00:49.739Z","author":{"@type":"Person","name":"xiaomaotou31"},"publisher":{"@type":"Organization","name":"小毛头31的博客","logo":{"@type":"ImageObject","url":"http://example.com/img/logo.svg"}},"description":"LRU REPLACEMENT POLICY这个task是做lru替换类，负责跟踪buffer pool中的page"}</script><link rel="canonical" href="http://example.com/2022/04/15/CMU-15-445-Lab1%E8%AE%B0%E5%BD%95/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 5.4.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="小毛头31的博客" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-9-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2022-04-15T14:34:28.000Z" title="2022/4/15 下午10:34:28">2022-04-15</time>发表</span><span class="level-item"><time dateTime="2022-05-29T16:00:49.739Z" title="2022/5/30 上午12:00:49">2022-05-30</time>更新</span><span class="level-item">5 分钟读完 (大约692个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">CMU-15-445 Lab1记录</h1><div class="content"><h1 id="LRU-REPLACEMENT-POLICY"><a href="#LRU-REPLACEMENT-POLICY" class="headerlink" title="LRU REPLACEMENT POLICY"></a>LRU REPLACEMENT POLICY</h1><p>这个task是做lru替换类，负责跟踪buffer pool中的page</p>
+<span id="more"></span>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><ul>
+<li>LRU的思可以参考leetcode中的lru的实现，双向链表＋map，实现增删改查都是O(1)的操作</li>
+<li>其他的跟着TASK1中的描述就可以了  </li>
+</ul>
+<h1 id="Task-2-BUFFER-POOL-MANAGER-INSTANCE"><a href="#Task-2-BUFFER-POOL-MANAGER-INSTANCE" class="headerlink" title="Task 2 BUFFER POOL MANAGER INSTANCE"></a>Task 2 BUFFER POOL MANAGER INSTANCE</h1><p>这个task 需要是实现一个buffer pool manager(<code>BufferPoolManagerInstance</code>)，<code>BufferPoolManagerInstance</code>是负责将database page从<code>DiskManager</code>取出来并将它们放到内存中的一个类。<code>BufferPoolManagerInstance</code>也可以将脏页写回到磁盘以此来给page腾出地方。<br>在内存中的pges都是由<code>Page</code>类来管理的，每个<code>Page</code>都包含<code>DiskManager</code>从物理磁盘中读取出来的一块大小的数据。<code>BufferPoolManagerInstance</code>会重复使用<code>Page</code>对象，所以同一个<code>Page</code>可能会包含不同的内容。Page由page_id来表明包含的物理页是哪个。如果<code>Page</code>对象没有包含一个物理页，就将其<code>page_id</code>设置为<code>IINVALID_PAGE_ID  </code><br>每一个<code>Page</code>对象都包含一个计数器，表明有多少个线程Pinned了这个page。所以<code>BufferPoolManagerInstance</code>是不允许free一个被Pinned的<code>Page</code>。每个<code>Page</code>还表明当前的页是否是Dirty的。<code>BufferPoolManagerInstance</code>当要重用包含脏页的<code>Page</code>的时候，必须先写回。<br><code>BufferPoolManagerInstance</code>需要使用刚才实现的<code>LRUReplacer</code>。  </p>
+<h2 id="思路-1"><a href="#思路-1" class="headerlink" title="思路"></a>思路</h2><ul>
+<li><code>FechPgImg(page_id)</code><ul>
+<li>这个函数基本跟着cpp文件中的提示来就行，如果在replacer获取到的page是脏页，需要flush一下，并且记得更新page的page_id,pin_count等参数</li>
+</ul>
+</li>
+<li><code>UnpinPgImg(page_id, is_dirty)</code><ul>
+<li>先执行pin_count–的操作，还要更新is_dirty_，最后如果pin_count为0的话，调用<code>replacer-&gt;Unpin(frame_id)</code>，将page调回replacer中</li>
+</ul>
+</li>
+<li><code>FlushPgImg(page_id)</code><ul>
+<li>调用disk_manager-&gt;WritePage即可</li>
+</ul>
+</li>
+<li><code>FlushAllPagesImpl()</code><ul>
+<li>同上</li>
+</ul>
+</li>
+<li><code>NewPgImp(page_id)</code><ul>
+<li>跟着提示来，如果获取的页是dirty的，就flush</li>
+</ul>
+</li>
+<li><code>DeletePgImg(page_id)</code><ul>
+<li>跟着提示来，如果脏页就刷新，如果确定要删除这个页，需要调用replacer-&gt;Pin(frame_id)，将这个page对应的frame删除，再放入free_list中，否则会造成replacer和free_list中同时存在的情况  </li>
+</ul>
+</li>
+</ul>
+<h1 id="Task-3-PARALLEL-BUFFER-POOL-MANAGER"><a href="#Task-3-PARALLEL-BUFFER-POOL-MANAGER" class="headerlink" title="Task 3 PARALLEL BUFFER POOL MANAGER"></a>Task 3 PARALLEL BUFFER POOL MANAGER</h1><p>这个task需要将buffer pool实现为线程安全。<br><code>ParallelBufferPoolManager</code>是一个有多个<code>BufferPoolManagerInstance</code>的类，每个操作都会让<code>ParallelBufferPoolManager</code>选择一个<code>BufferPoolManagerInstance</code>进行操作。<br>当给出page id的时候，需要通过取模的方式选择一个<code>BufferPoolManagerInstance</code>，方法是<code>page_id mod num_instances</code>。  </p>
+<h2 id="思路-2"><a href="#思路-2" class="headerlink" title="思路"></a>思路</h2><p>首先个刚才实现的BUFFER POOL MANAGER INSTANCE加锁，可以直接使用它自身带的latch_，加锁方式可以使用c++17中的<code>scoped_lock</code>。<br>剩下的就没啥可注意的了</p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>CMU-15-445 Lab1记录</p><p><a href="http://example.com/2022/04/15/CMU-15-445-Lab1记录/">http://example.com/2022/04/15/CMU-15-445-Lab1记录/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>xiaomaotou31</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2022-04-15</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2022-05-30</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/CMU-15-445/">CMU-15-445</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2022/04/17/CMU-15-445-%E7%AC%94%E8%AE%B0-%E5%9B%9B/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">CMU-15-445-笔记(四)</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2022/04/14/CMU-15-445%E7%AC%94%E8%AE%B0-%E4%B8%89/"><span class="level-item">CMU-15-445笔记(三)</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">评论</h3><div id="disqus_thread"><noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div><script>var disqus_config = function () {
+            this.page.url = 'http://example.com/2022/04/15/CMU-15-445-Lab1%E8%AE%B0%E5%BD%95/';
+            this.page.identifier = '2022/04/15/CMU-15-445-Lab1记录/';
+        };
+        (function() {
+            var d = document, s = d.createElement('script');  
+            s.src = '//' + 'xiaomaotou31-blog' + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/avatar.png" alt="xiaomaotou31"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">xiaomaotou31</p><p class="is-size-6 is-block">一个普通学生</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Shandong Jinan</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">38</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">0</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">6</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/withouthead" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/withouthead"><i class="fab fa-github"></i></a></div></div></div><!--!--><!--!--><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-06-14T15:46:23.000Z">2022-06-14</time></p><p class="title"><a href="/2022/06/14/redis%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0%E7%AC%94%E8%AE%B0-%E4%B8%80/">redis设计与实现笔记(一)</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-28T15:43:53.000Z">2022-05-28</time></p><p class="title"><a href="/2022/05/28/CMU15-445%E7%AC%94%E8%AE%B0-%E5%8D%81%E5%85%AD/">CMU15-445笔记(十六)</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-28T10:16:27.000Z">2022-05-28</time></p><p class="title"><a href="/2022/05/28/CMU-15-445%E7%AC%94%E8%AE%B0-%E5%8D%81%E4%BA%94/">CMU-15-445笔记(十五) 基于锁的协议</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-22T07:55:33.000Z">2022-05-22</time></p><p class="title"><a href="/2022/05/22/CMU-15-445%E7%AC%94%E8%AE%B0-%E5%8D%81%E5%9B%9B/">CMU-15-445笔记(十四)</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-21T03:10:37.000Z">2022-05-21</time></p><p class="title"><a href="/2022/05/21/CMU-15-445%E7%AC%94%E8%AE%B0-%E5%8D%81%E4%B8%89/">CMU-15-445笔记(十三)</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2022/06/"><span class="level-start"><span class="level-item">六月 2022</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/05/"><span class="level-start"><span class="level-item">五月 2022</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/04/"><span class="level-start"><span class="level-item">四月 2022</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/01/"><span class="level-start"><span class="level-item">一月 2022</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/11/"><span class="level-start"><span class="level-item">十一月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/10/"><span class="level-start"><span class="level-item">十月 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/09/"><span class="level-start"><span class="level-item">九月 2021</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/08/"><span class="level-start"><span class="level-item">八月 2021</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/07/"><span class="level-start"><span class="level-item">七月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/CMU-15-445/"><span class="tag">CMU-15-445</span><span class="tag">20</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MIT6-824/"><span class="tag">MIT6.824</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/OS/"><span class="tag">OS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/bug/"><span class="tag">bug</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/redis/"><span class="tag">redis</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"><span class="tag">数据库</span><span class="tag">3</span></a></div></div></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="小毛头31的博客" height="28"></a><p class="is-size-7"><span>&copy; 2022 xiaomaotou31</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>CMU15-445笔记(十六) - 小毛头31的博客</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="小毛头31的博客"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="小毛头31的博客"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="并发控制基于时间戳的协议时间戳对于系统中的每个事务$T_i$，赋予它一个时间戳，记为$TS(T_i)$。如果$TS(T_i) &amp;lt; TS(T_j)$，说明$T_j$比较新。可以使用  系统时钟 逻辑计数器"><meta property="og:type" content="blog"><meta property="og:title" content="CMU15-445笔记(十六)"><meta property="og:url" content="http://example.com/2022/05/28/CMU15-445%E7%AC%94%E8%AE%B0-%E5%8D%81%E5%85%AD/"><meta property="og:site_name" content="小毛头31的博客"><meta property="og:description" content="并发控制基于时间戳的协议时间戳对于系统中的每个事务$T_i$，赋予它一个时间戳，记为$TS(T_i)$。如果$TS(T_i) &amp;lt; TS(T_j)$，说明$T_j$比较新。可以使用  系统时钟 逻辑计数器"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://raw.githubusercontent.com/Withouthead/blog_imag/master/20220529223420.png"><meta property="article:published_time" content="2022-05-28T15:43:53.000Z"><meta property="article:modified_time" content="2022-05-29T16:20:39.215Z"><meta property="article:author" content="xiaomaotou31"><meta property="article:tag" content="CMU-15-445"><meta property="article:tag" content="数据库"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="https://raw.githubusercontent.com/Withouthead/blog_imag/master/20220529223420.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2022/05/28/CMU15-445%E7%AC%94%E8%AE%B0-%E5%8D%81%E5%85%AD/"},"headline":"CMU15-445笔记(十六)","image":["https://raw.githubusercontent.com/Withouthead/blog_imag/master/20220529223420.png"],"datePublished":"2022-05-28T15:43:53.000Z","dateModified":"2022-05-29T16:20:39.215Z","author":{"@type":"Person","name":"xiaomaotou31"},"publisher":{"@type":"Organization","name":"小毛头31的博客","logo":{"@type":"ImageObject","url":"http://example.com/img/logo.svg"}},"description":"并发控制基于时间戳的协议时间戳对于系统中的每个事务$T_i$，赋予它一个时间戳，记为$TS(T_i)$。如果$TS(T_i) &lt; TS(T_j)$，说明$T_j$比较新。可以使用  系统时钟 逻辑计数器"}</script><link rel="canonical" href="http://example.com/2022/05/28/CMU15-445%E7%AC%94%E8%AE%B0-%E5%8D%81%E5%85%AD/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 5.4.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="小毛头31的博客" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-9-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2022-05-28T15:43:53.000Z" title="2022/5/28 下午11:43:53">2022-05-28</time>发表</span><span class="level-item"><time dateTime="2022-05-29T16:20:39.215Z" title="2022/5/30 上午12:20:39">2022-05-30</time>更新</span><span class="level-item">19 分钟读完 (大约2859个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">CMU15-445笔记(十六)</h1><div class="content"><h1 id="并发控制"><a href="#并发控制" class="headerlink" title="并发控制"></a>并发控制</h1><h2 id="基于时间戳的协议"><a href="#基于时间戳的协议" class="headerlink" title="基于时间戳的协议"></a>基于时间戳的协议</h2><h3 id="时间戳"><a href="#时间戳" class="headerlink" title="时间戳"></a>时间戳</h3><p>对于系统中的每个事务$T_i$，赋予它一个时间戳，记为$TS(T_i)$。如果$TS(T_i) &lt; TS(T_j)$，说明$T_j$比较新。<br>可以使用</p>
+<ul>
+<li>系统时钟</li>
+<li>逻辑计数器<span id="more"></span>
+来实现时间戳。<br>除了$TS(T_i)$之外，还需要两个与数据库项$Q$相关的时间戳</li>
+<li>W-timestamp(Q)表示成功执行write(Q)的任意事务的最大时间戳</li>
+<li>R-timestamp(Q)表示成功执行read(Q)的人一十五的最大时间戳</li>
+</ul>
+<h3 id="时间戳排序协议"><a href="#时间戳排序协议" class="headerlink" title="时间戳排序协议"></a>时间戳排序协议</h3><p>时间戳排序协议保证任何有冲突的read和write操作按照时间戳的次序执行。</p>
+<ul>
+<li>假设事务$T_i$执行read(Q)<ul>
+<li>如果$TS(T_i) &lt; W-timestamp(Q)$，那么$T_i$需要读取的值就被覆盖了，read操作会被拒绝执行，并且执行回滚</li>
+<li>如果$TS(T_i) \geq W-timestamp(Q)$那么可以执行read操作，并且$R-timestamp(Q)$会被设置成$R-timestamp(Q)$和$TS(T_i)$的最大值</li>
+</ul>
+</li>
+<li>如果事务$T_i$执行write(Q)<ul>
+<li>如果$TS(T_i) &lt; R-timestamp(Q)$ 那么说明$T_i$的Q值是之前需要的，并且系统会认为这个值不会再出现了，所以拒绝执行，回滚</li>
+<li>如果$TS(T_i) \geq R-timestamp(Q)$，那么执行，并将$W-timestamp(Q)$设置为$TS(T_i)$</li>
+</ul>
+</li>
+</ul>
+<p>时间戳排序协议保证没有死锁，因为事务不会出现等待锁的情况。但是有可能会出现饿死的情况。时间戳协议也可能会出现不可恢复的调度。可以采取以下策略来保证可恢复</p>
+<ul>
+<li>再事务末尾一起执行所有的写操作，并且要求再执行这些写操作的时候，任何事务都不能访问已经写过的任何数据项，否则就有可能不可恢复。这种策略是保证无级联和可恢复的</li>
+<li>对未提交的数据项的读操作推迟到更新该数据项的事务提交之后也可以保证无级联和可恢复</li>
+<li>使用提交依赖</li>
+</ul>
+<h4 id="Thomas写规则"><a href="#Thomas写规则" class="headerlink" title="Thomas写规则"></a>Thomas写规则</h4><p>当$TS(T_i) &lt; W-timestamp(Q)$的时候，这个write会直接忽略，而不是回滚。这个会形成view serializable，不是冲突 serializable。</p>
+<h2 id="基于有效性检查的协议"><a href="#基于有效性检查的协议" class="headerlink" title="基于有效性检查的协议"></a>基于有效性检查的协议</h2><p>有效性检查时用来监控哪些事务会陷入冲突中的监控机制。它要求事务$T_i$按照两个或者三个阶段来执行。这个协议也叫乐观的并发控制(optimistic concurrency-control)</p>
+<ul>
+<li>读阶段<ul>
+<li>在这个阶段中，事务$T_i$读取数据项的值并保存在局部变量中，$T_i$的所有write操作都是针对局部变量的</li>
+</ul>
+</li>
+<li>有效性检查阶段<ul>
+<li>对事务$T_i$进行有效性检查测试，决定事务是否可以继续执行，还是终止</li>
+</ul>
+</li>
+<li>写阶段<ul>
+<li>如果通过了检查，$T_i$将write的操作的局部变量写入数据库</li>
+</ul>
+</li>
+</ul>
+<h3 id="有效性检查"><a href="#有效性检查" class="headerlink" title="有效性检查"></a>有效性检查</h3><p>为了执行有效性检查，需要以下三个时间戳</p>
+<ul>
+<li>$StartTS(T_i)$ 事务开始执行的时间</li>
+<li>$ValidationTS(T_i)$ 事务完成读阶段并开始检查的时间</li>
+<li>$FinishTS(T_I)$ 事务完成写阶段的时间</li>
+</ul>
+<p>该协议利用$ValidationTS(T_i)$时间戳的值来通过时间戳排序协议决定串行化的顺序。所以$TS(T_i)=ValidationTS(T_i)$，并且如果$TS(T_j) &lt; TS(T_k)$，那么有效性检查协议必须等价于事务$T_j$出现在$T_k$之前的一个串行调度。</p>
+<p>有效性检查需要满足以下两个条件之一</p>
+<ul>
+<li>$FinshTS(T_k) &lt; StartTS(T_i)$，这样的话，$T_k$不会影响到$T_i$</li>
+<li>$T_k$写的数据项和$T_i$读的数据项没有交集，并且在$T_i$开始有效性检查阶段前，$T_k$就完成了写阶段，这就保证了两个事务的写不会重叠，导致覆盖的顺序错误。这样就保证了串行化<br><img src="https://raw.githubusercontent.com/Withouthead/blog_imag/master/20220529223420.png"></li>
+</ul>
+<p>有效性检查还保证了无级联，因为写操作事务提交后实际上的写到数据库的操作才开始。</p>
+<blockquote>
+<p>为什么要用$ValidationTS(T_i)$来作为$TS(T_i)$，而不是$StartTS(T_i)$，还是假设$TS(T_i) &gt; TS(T_k)$这样有可能导致$T_i$比$T_k$更早的进入有效性检查阶段，从而导致$T_i$需要等待$T_k$</p>
+</blockquote>
+<h2 id="多版本控制"><a href="#多版本控制" class="headerlink" title="多版本控制"></a>多版本控制</h2><p>multiversion concurrency control在每次write(Q)时都会创建Q的新版本，当事务执行read(Q)操作的时候，并发控制管理器会选择Q的一个合适的版本进行读取，必须能保证可串行化。<br>多版本控制主要解决的时以上协议想要读取旧版本时导致的回滚或者等待问题。</p>
+<h3 id="多版本时间戳排序"><a href="#多版本时间戳排序" class="headerlink" title="多版本时间戳排序"></a>多版本时间戳排序</h3><p>这个是时间戳排序协议的拓展版本，对于每一个数据项Q，都有多个版本Q1 Q2…Qk，每个版本都对应着三个数据字段</p>
+<ul>
+<li>Content Qk版本的值</li>
+<li>W-timestamp(Q) 创建Qk版本的事务的时间戳</li>
+<li>R-timestamp(Q) 所有成功读取Qk事务的最大时间戳</li>
+</ul>
+<p>假设$Q_k$小于或等于$TS(T_i)$的最大写时间戳</p>
+<ul>
+<li>如果$T_i$执行read(Q)，那么直接返回$Q_k$的值</li>
+<li>如果事务$T_i$执行write(Q)，如果$TS(T_i) &lt; R-timestamp(Q_k)$，那么系统回滚$T_i$，如果$TS(T_i)=W-timestamp(Q_k)$，系统会覆盖Q_k的内容，如果$TS(T_i) &gt; R-timestamp(Q_k)$，系统给Q创建新的版本</li>
+</ul>
+<p>对于Q，有一个有效区间的概念，如果Qi是Q的最新版本，那么Qi的有效区间就是$[W-timestapm(Q_i), \infty]$，如果不是最新的，那么就是$[W-timestamp(Q_i), W-timestamp(Q_{i+1})]$。有效区间就是事务在这个区间内会读取到这个Q版本的数据</p>
+<p>多版本时间戳是不保证可恢复和无级联的，可以按照原版时间戳的方式进行扩展。</p>
+<h3 id="多版本两阶段封锁"><a href="#多版本两阶段封锁" class="headerlink" title="多版本两阶段封锁"></a>多版本两阶段封锁</h3><p>多版本两阶段封锁会对只读事务和更新事务分别有不同的处理<br>更新事务会执行强两阶段封锁，事务会只有全部的锁直到事务结束，所以可以实现按照事务提交的次序来进行串行化，每个事务都会有以逻辑计数器呈现的时间戳，叫ts-counter<br>当只读事务开始前，数据库会赋予它时间戳，只读事务执行读操作是和多版本时间戳是一样的。<br>当更新事务读取一个数据项的时候，会先获取数据项上的共享锁并且读取数据项的最新版本。当更新事务写数据的时候，要获取排他锁，然后创建一个该数据项的新版本，并设置新版本的时间戳为$\infty$<br>当更新事务$T_i$完成操作的时候，会进入提交过程。同一时间只能有一个更新事务进行提交。$T_i$会将它创建的每个版本的时间戳设置为ts-counter + 1, 然后ts-counter + 1，最后提交。<br>只读事务会看到ts-counter的旧值直到$T_i$提交陈工，所以$T_i$提交前，启动的只读事务只能看到$T_i$更新前的就值，而提交后的只读事务能看到新值。<br>只读事务在任何情况下都不用加锁。</p>
+<p>多版本两阶段封锁是可恢复且无级联的（因为强两阶段封锁）</p>
+<h3 id="多版本控制删除版本"><a href="#多版本控制删除版本" class="headerlink" title="多版本控制删除版本"></a>多版本控制删除版本</h3><p>如果有多个W-timnestamp小于当前所有事务中最老的事务，那么就删除这些版本除了最新的版本之外的所有版本。</p>
+<h2 id="快照隔离"><a href="#快照隔离" class="headerlink" title="快照隔离"></a>快照隔离</h2><p>快照隔离是一种特殊的并发控制机制。在事务开始执行时给它一份数据库的快照，然后事务在快照上以其他并发事务完全隔离的形式进行操作。快照中的数据值仅包含已经提交的事务所写的值。<br>在快照隔离中，更新事务会存在可能的冲突，所以在允许事务提交前，需要进行有效性检查，这里的有效性检查和前面的方式不同。直到检查通过，事务进行的更改才会进入数据库中。</p>
+<h3 id="快照隔离中的多版本"><a href="#快照隔离中的多版本" class="headerlink" title="快照隔离中的多版本"></a>快照隔离中的多版本</h3><p>事务有两个时间戳，$StartTS(T_i)$和$CommitTS(T_i)$，分别是事务$T_i$开始的时间和事务请求有效性检查的时间。在版本中，只有一个写时间戳，表明版本创建的时间，事务$T_i$创建的版本的时间戳设定为$CommitTS(T_i)$<br>当事务$T_i$读取一个数据项的时候，具有时间戳$\leq$ 的数据项的最新版本会返回给事务。所以事务$T_i$不会看到比事务新的数据，这样就完成了快照隔离</p>
+<h3 id="更新事务的有效性检查步骤"><a href="#更新事务的有效性检查步骤" class="headerlink" title="更新事务的有效性检查步骤"></a>更新事务的有效性检查步骤</h3><p>如果有两个更新事务都要进行提交，有可能会出现更新丢失的情况，快照隔离有两种方式来防止更新丢失</p>
+<ul>
+<li>先提交者胜 first committer wins</li>
+<li>先更新者胜 first updater wins<br>这两种都是基于检查事物的并发事务</li>
+</ul>
+<h4 id="并发事务"><a href="#并发事务" class="headerlink" title="并发事务"></a>并发事务</h4><p>如果：<br>$StratTS(T_j) \leq StartTS(T_i) \leq CommitTS(T_j)$<br>$StratTS(T_i) \leq StartTS(T_j) \leq CommitTS(T_i)$<br>两个任意一个成立，那么这两个事务就是并发的</p>
+<h4 id="先提交者胜-first-committer-wins"><a href="#先提交者胜-first-committer-wins" class="headerlink" title="先提交者胜 first committer wins"></a>先提交者胜 first committer wins</h4><ul>
+<li>检查是否存在某个事务在当前事务将数据写到数据库前就将更新提交到了数据库中，也就是可以检查数据项d中是否有一个版本的时间戳介于$StratTS(T_i)$ $CommitTS(T_i)$之间</li>
+<li>如果有，那么$T_i$就终止</li>
+<li>如果没有就提交</li>
+</ul>
+<h4 id="先更新者胜-first-updater-wins"><a href="#先更新者胜-first-updater-wins" class="headerlink" title="先更新者胜 first updater wins"></a>先更新者胜 first updater wins</h4><p>当事务想要更新数据项的时候，先获取该数据项的写锁，如果能获取，那么获取后</p>
+<ul>
+<li>如果这个数据项已经被任何并发事务更新，那么$T_i$终止，否则可以继续执行<br>如果写锁已经被另一个并发事务获取了，</li>
+<li>$T_i$等待直到获取锁的事务中止或者提交<ul>
+<li>如果获取锁的事务终止了，那么$T_i$获取锁，然后执行上面的有效性检查</li>
+<li>如果获取锁额事务提交了，那么$T_i$中止</li>
+</ul>
+</li>
+</ul>
+<h3 id="快照隔离存在的问题"><a href="#快照隔离存在的问题" class="headerlink" title="快照隔离存在的问题"></a>快照隔离存在的问题</h3><p>快照隔离第一个问题是主键约束和外键约束不能再快照</p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>CMU15-445笔记(十六)</p><p><a href="http://example.com/2022/05/28/CMU15-445笔记-十六/">http://example.com/2022/05/28/CMU15-445笔记-十六/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>xiaomaotou31</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2022-05-28</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2022-05-30</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/CMU-15-445/">CMU-15-445</a><a class="link-muted mr-2" rel="tag" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2022/06/14/redis%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0%E7%AC%94%E8%AE%B0-%E4%B8%80/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">redis设计与实现笔记(一)</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2022/05/28/CMU-15-445%E7%AC%94%E8%AE%B0-%E5%8D%81%E4%BA%94/"><span class="level-item">CMU-15-445笔记(十五) 基于锁的协议</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">评论</h3><div id="disqus_thread"><noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div><script>var disqus_config = function () {
+            this.page.url = 'http://example.com/2022/05/28/CMU15-445%E7%AC%94%E8%AE%B0-%E5%8D%81%E5%85%AD/';
+            this.page.identifier = '2022/05/28/CMU15-445笔记-十六/';
+        };
+        (function() {
+            var d = document, s = d.createElement('script');  
+            s.src = '//' + 'xiaomaotou31-blog' + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/avatar.png" alt="xiaomaotou31"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">xiaomaotou31</p><p class="is-size-6 is-block">一个普通学生</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Shandong Jinan</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">38</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">0</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">6</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/withouthead" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/withouthead"><i class="fab fa-github"></i></a></div></div></div><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#并发控制"><span class="level-left"><span class="level-item">1</span><span class="level-item">并发控制</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#基于时间戳的协议"><span class="level-left"><span class="level-item">1.1</span><span class="level-item">基于时间戳的协议</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#时间戳"><span class="level-left"><span class="level-item">1.1.1</span><span class="level-item">时间戳</span></span></a></li><li><a class="level is-mobile" href="#时间戳排序协议"><span class="level-left"><span class="level-item">1.1.2</span><span class="level-item">时间戳排序协议</span></span></a></li></ul></li><li><a class="level is-mobile" href="#基于有效性检查的协议"><span class="level-left"><span class="level-item">1.2</span><span class="level-item">基于有效性检查的协议</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#有效性检查"><span class="level-left"><span class="level-item">1.2.1</span><span class="level-item">有效性检查</span></span></a></li></ul></li><li><a class="level is-mobile" href="#多版本控制"><span class="level-left"><span class="level-item">1.3</span><span class="level-item">多版本控制</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#多版本时间戳排序"><span class="level-left"><span class="level-item">1.3.1</span><span class="level-item">多版本时间戳排序</span></span></a></li><li><a class="level is-mobile" href="#多版本两阶段封锁"><span class="level-left"><span class="level-item">1.3.2</span><span class="level-item">多版本两阶段封锁</span></span></a></li><li><a class="level is-mobile" href="#多版本控制删除版本"><span class="level-left"><span class="level-item">1.3.3</span><span class="level-item">多版本控制删除版本</span></span></a></li></ul></li><li><a class="level is-mobile" href="#快照隔离"><span class="level-left"><span class="level-item">1.4</span><span class="level-item">快照隔离</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#快照隔离中的多版本"><span class="level-left"><span class="level-item">1.4.1</span><span class="level-item">快照隔离中的多版本</span></span></a></li><li><a class="level is-mobile" href="#更新事务的有效性检查步骤"><span class="level-left"><span class="level-item">1.4.2</span><span class="level-item">更新事务的有效性检查步骤</span></span></a></li><li><a class="level is-mobile" href="#快照隔离存在的问题"><span class="level-left"><span class="level-item">1.4.3</span><span class="level-item">快照隔离存在的问题</span></span></a></li></ul></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><!--!--><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-06-14T15:46:23.000Z">2022-06-14</time></p><p class="title"><a href="/2022/06/14/redis%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0%E7%AC%94%E8%AE%B0-%E4%B8%80/">redis设计与实现笔记(一)</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-28T15:43:53.000Z">2022-05-28</time></p><p class="title"><a href="/2022/05/28/CMU15-445%E7%AC%94%E8%AE%B0-%E5%8D%81%E5%85%AD/">CMU15-445笔记(十六)</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-28T10:16:27.000Z">2022-05-28</time></p><p class="title"><a href="/2022/05/28/CMU-15-445%E7%AC%94%E8%AE%B0-%E5%8D%81%E4%BA%94/">CMU-15-445笔记(十五) 基于锁的协议</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-22T07:55:33.000Z">2022-05-22</time></p><p class="title"><a href="/2022/05/22/CMU-15-445%E7%AC%94%E8%AE%B0-%E5%8D%81%E5%9B%9B/">CMU-15-445笔记(十四)</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-21T03:10:37.000Z">2022-05-21</time></p><p class="title"><a href="/2022/05/21/CMU-15-445%E7%AC%94%E8%AE%B0-%E5%8D%81%E4%B8%89/">CMU-15-445笔记(十三)</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2022/06/"><span class="level-start"><span class="level-item">六月 2022</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/05/"><span class="level-start"><span class="level-item">五月 2022</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/04/"><span class="level-start"><span class="level-item">四月 2022</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/01/"><span class="level-start"><span class="level-item">一月 2022</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/11/"><span class="level-start"><span class="level-item">十一月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/10/"><span class="level-start"><span class="level-item">十月 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/09/"><span class="level-start"><span class="level-item">九月 2021</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/08/"><span class="level-start"><span class="level-item">八月 2021</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/07/"><span class="level-start"><span class="level-item">七月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/CMU-15-445/"><span class="tag">CMU-15-445</span><span class="tag">20</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MIT6-824/"><span class="tag">MIT6.824</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/OS/"><span class="tag">OS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/bug/"><span class="tag">bug</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/redis/"><span class="tag">redis</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"><span class="tag">数据库</span><span class="tag">3</span></a></div></div></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="小毛头31的博客" height="28"></a><p class="is-size-7"><span>&copy; 2022 xiaomaotou31</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

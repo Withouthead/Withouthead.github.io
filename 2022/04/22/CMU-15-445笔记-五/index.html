@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>CMU-15-445笔记(五) - 小毛头31的博客</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="小毛头31的博客"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="小毛头31的博客"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="B+ TreeB+树是一个自平衡的树结构，查找，插入，删除都是O(log n)，B+是是一个M-way的搜索树"><meta property="og:type" content="blog"><meta property="og:title" content="CMU-15-445笔记(五)"><meta property="og:url" content="http://example.com/2022/04/22/CMU-15-445%E7%AC%94%E8%AE%B0-%E4%BA%94/"><meta property="og:site_name" content="小毛头31的博客"><meta property="og:description" content="B+ TreeB+树是一个自平衡的树结构，查找，插入，删除都是O(log n)，B+是是一个M-way的搜索树"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422210326.png"><meta property="og:image" content="https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422210624.png"><meta property="og:image" content="https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422215445.png"><meta property="og:image" content="https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422215518.png"><meta property="og:image" content="https://raw.githubusercontent.com/Withouthead/blog_imag/master/20220422220850.png"><meta property="og:image" content="https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422221233.png"><meta property="og:image" content="https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422221255.png"><meta property="og:image" content="https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422221610.png"><meta property="og:image" content="https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422221951.png"><meta property="og:image" content="https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422222324.png"><meta property="og:image" content="https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422222344.png"><meta property="og:image" content="https://raw.githubusercontent.com/Withouthead/blog_imag/master/20220422222601.png"><meta property="og:image" content="https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422222727.png"><meta property="og:image" content="https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422223150.png"><meta property="og:image" content="https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422223209.png"><meta property="article:published_time" content="2022-04-22T12:49:48.000Z"><meta property="article:modified_time" content="2022-05-08T14:37:20.856Z"><meta property="article:author" content="xiaomaotou31"><meta property="article:tag" content="CMU-15-445"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422210326.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2022/04/22/CMU-15-445%E7%AC%94%E8%AE%B0-%E4%BA%94/"},"headline":"CMU-15-445笔记(五)","image":["https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422210326.png","https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422210624.png","https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422215445.png","https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422215518.png","https://raw.githubusercontent.com/Withouthead/blog_imag/master/20220422220850.png","https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422221233.png","https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422221255.png","https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422221610.png","https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422221951.png","https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422222324.png","https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422222344.png","https://raw.githubusercontent.com/Withouthead/blog_imag/master/20220422222601.png","https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422222727.png","https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422223150.png","https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422223209.png"],"datePublished":"2022-04-22T12:49:48.000Z","dateModified":"2022-05-08T14:37:20.856Z","author":{"@type":"Person","name":"xiaomaotou31"},"publisher":{"@type":"Organization","name":"小毛头31的博客","logo":{"@type":"ImageObject","url":"http://example.com/img/logo.svg"}},"description":"B+ TreeB+树是一个自平衡的树结构，查找，插入，删除都是O(log n)，B+是是一个M-way的搜索树"}</script><link rel="canonical" href="http://example.com/2022/04/22/CMU-15-445%E7%AC%94%E8%AE%B0-%E4%BA%94/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 5.4.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="小毛头31的博客" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-9-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2022-04-22T12:49:48.000Z" title="2022/4/22 下午8:49:48">2022-04-22</time>发表</span><span class="level-item"><time dateTime="2022-05-08T14:37:20.856Z" title="2022/5/8 下午10:37:20">2022-05-08</time>更新</span><span class="level-item">8 分钟读完 (大约1143个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">CMU-15-445笔记(五)</h1><div class="content"><h1 id="B-Tree"><a href="#B-Tree" class="headerlink" title="B+ Tree"></a>B+ Tree</h1><p>B+树是一个自平衡的树结构，查找，插入，删除都是O(log n)，B+是是一个M-way的搜索树</p>
+<span id="more"></span>
+<ul>
+<li>所有叶子结点的深度都是一样的</li>
+<li>所有结点（除了root），都是至少半满的<ul>
+<li>M/2 &lt;= keys &lt;= M-1</li>
+</ul>
+</li>
+<li>所有内部结点都有k个keys以及k+1个非空子节点<br><img src="https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422210326.png">  </li>
+</ul>
+<h2 id="节点"><a href="#节点" class="headerlink" title="节点"></a>节点</h2><h3 id="叶子节点"><a href="#叶子节点" class="headerlink" title="叶子节点"></a>叶子节点</h3><p><img src="https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422210624.png"><br>叶子节点内部存储类似page的存储，头部为元信息，然后存储key，最后存储value，key提供对应value的偏移值。<br>叶子节点中存储value的方式主要有两种</p>
+<ul>
+<li>Record Ids<br>存储record id，指向数据存放的位置</li>
+<li>Tuple Data<br>直接将数据存放在leaf node中</li>
+</ul>
+<h2 id="B-Tree和B-Tree的区别"><a href="#B-Tree和B-Tree的区别" class="headerlink" title="B Tree和B+ Tree的区别"></a>B Tree和B+ Tree的区别</h2><p>B Tree中内部节点会存储value，但是B+ Tree中 value只会存在leaf node 中，所以B Tree中不会出现相同的key，但是B+ Tree中会。</p>
+<h2 id="Insert"><a href="#Insert" class="headerlink" title="Insert"></a>Insert</h2><ul>
+<li>首先找到要插入的叶子节点L</li>
+<li>将数据按顺序放到L中</li>
+<li>如果L空间足够，就完成插入了</li>
+<li>如果不够，分裂L，成为L和L2，同时要在父节点上增加entry，如果父节点不够，就递归分裂  </li>
+</ul>
+<h2 id="Delete"><a href="#Delete" class="headerlink" title="Delete"></a>Delete</h2><ul>
+<li>首先找到目标所在的叶子节点L，删除该数的entry</li>
+<li>如果L至少半满，那么操作结束，如果少于半满，那么尝试从兄弟节点拆借entries，如果失败，那么就尝试与兄弟节点合并</li>
+<li>如果与兄弟节点合并，那么递归的删除父节点的<br>L的entry  </li>
+</ul>
+<h2 id="Clustered-Indexes-聚簇索引"><a href="#Clustered-Indexes-聚簇索引" class="headerlink" title="Clustered Indexes 聚簇索引"></a>Clustered Indexes 聚簇索引</h2><p>聚簇索引是将主键按照顺序排序存储，每个table只能还有一个聚簇索引，如果table中没有主键，那么就设置一列隐藏列作为主键</p>
+<h2 id="Selection-Conditions"><a href="#Selection-Conditions" class="headerlink" title="Selection Conditions"></a>Selection Conditions</h2><p>B+树支持多种的搜索方式，以&lt;A, B, C&gt;为例</p>
+<ul>
+<li>(a = 5 AND b = 3)</li>
+<li>(b = 3)  </li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422215445.png"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422215518.png"></p>
+<h2 id="B-Tree-Design-Choices"><a href="#B-Tree-Design-Choices" class="headerlink" title="B+ Tree Design Choices"></a>B+ Tree Design Choices</h2><h3 id="Node-Size"><a href="#Node-Size" class="headerlink" title="Node Size"></a>Node Size</h3><p>存储设备越小，Node Size应该越大</p>
+<ul>
+<li>HDD 1MB</li>
+<li>SSD 10KB</li>
+<li>In-Memory 512B</li>
+</ul>
+<h3 id="Merge-Threshold"><a href="#Merge-Threshold" class="headerlink" title="Merge Threshold"></a>Merge Threshold</h3><p>可以延迟Merge操作，因为Merge操作开销过大</p>
+<h3 id="Variable-Length-Keys"><a href="#Variable-Length-Keys" class="headerlink" title="Variable Length Keys"></a>Variable Length Keys</h3><p>应对变长变量的方式</p>
+<ul>
+<li>存储指针<ul>
+<li>现在已经不使用这种方法了</li>
+</ul>
+</li>
+<li>可变长度的节点<ul>
+<li>每个节点的大小可以改变，但是需要注意内存管理</li>
+<li>这种方式也没人使用</li>
+</ul>
+</li>
+<li>Padding<ul>
+<li>固定一个最大大小的尺寸，存储后的数据小于这个尺寸，那么就填充空值</li>
+</ul>
+</li>
+<li>Key Map / Indirection<ul>
+<li>设立一个Key Map，用来指向key value的位置</li>
+<li><img src="https://raw.githubusercontent.com/Withouthead/blog_imag/master/20220422220850.png"></li>
+</ul>
+</li>
+</ul>
+<h3 id="Non-Unique-Indexes"><a href="#Non-Unique-Indexes" class="headerlink" title="Non-Unique Indexes"></a>Non-Unique Indexes</h3><p>使用索引的key可能是不唯一的，通常有两种方式</p>
+<ul>
+<li>Duplicate Key<ul>
+<li>多次存储相同的key</li>
+<li><img src="https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422221233.png"></li>
+</ul>
+</li>
+<li>Value list<ul>
+<li> Key只出现一次，但是需要维护一个key链表，表示在这个key下的value</li>
+<li> <img src="https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422221255.png">  </li>
+</ul>
+</li>
+</ul>
+<h3 id="Intra-Node-Search"><a href="#Intra-Node-Search" class="headerlink" title="Intra-Node Search"></a>Intra-Node Search</h3><p>查找内部节点的方法：</p>
+<ul>
+<li>Linear<ul>
+<li>线性查找</li>
+</ul>
+</li>
+<li>Binary<ul>
+<li>二分查找</li>
+</ul>
+</li>
+<li>Interpolation<ul>
+<li>如果提前知道key的样子/属性/分布，可以用数学的方式来近似的查找位置<br><img src="https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422221610.png">  </li>
+</ul>
+</li>
+</ul>
+<h2 id="Optimizations"><a href="#Optimizations" class="headerlink" title="Optimizations"></a>Optimizations</h2><h3 id="Prefix-Compression"><a href="#Prefix-Compression" class="headerlink" title="Prefix Compression"></a>Prefix Compression</h3><p>如果存储在同一个叶子节点的keys 有相同的前缀，可以先将相同的前缀存储起来，然后存key的时候就不用存前缀了<br><img src="https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422221951.png">  </p>
+<h3 id="Suffix-Truncation"><a href="#Suffix-Truncation" class="headerlink" title="Suffix Truncation"></a>Suffix Truncation</h3><p>在内部节点的key只用于查找子节点的位置，所以可以只存储足够的prefix就要可以达到这样的目的。  </p>
+<p><img src="https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422222324.png"><br><img src="https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422222344.png"></p>
+<h3 id="Bulk-Insert"><a href="#Bulk-Insert" class="headerlink" title="Bulk Insert"></a>Bulk Insert</h3><p>如果提前有了所有的keys，那么可以排序，排完序之后从下往上建树，这是最快的建树方式<br><img src="https://raw.githubusercontent.com/Withouthead/blog_imag/master/20220422222601.png"><br><img src="https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422222727.png"></p>
+<h3 id="Pointer-Swizzling"><a href="#Pointer-Swizzling" class="headerlink" title="Pointer Swizzling"></a>Pointer Swizzling</h3><p>Node使用page id来存储对其他node的引用，所以DBMS需要每次都从buffer pool中获取对应的page，所以如果一个page已经pinned了，可以直接存储这个page的指针，避免再次去buffer pool 中获取page<br><img src="https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422223150.png"><br><img src="https://cdn.jsdelivr.net/gh/withouthead/blog_imag/img/20220422223209.png"></p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>CMU-15-445笔记(五)</p><p><a href="http://example.com/2022/04/22/CMU-15-445笔记-五/">http://example.com/2022/04/22/CMU-15-445笔记-五/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>xiaomaotou31</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2022-04-22</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2022-05-08</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/CMU-15-445/">CMU-15-445</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2022/04/26/CMU-15-445%E7%AC%94%E8%AE%B0-%E5%85%AD/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">CMU-15-445笔记(六)</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2022/04/18/Extendible-Hashing/"><span class="level-item">Extendible Hashing</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">评论</h3><div id="disqus_thread"><noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div><script>var disqus_config = function () {
+            this.page.url = 'http://example.com/2022/04/22/CMU-15-445%E7%AC%94%E8%AE%B0-%E4%BA%94/';
+            this.page.identifier = '2022/04/22/CMU-15-445笔记-五/';
+        };
+        (function() {
+            var d = document, s = d.createElement('script');  
+            s.src = '//' + 'xiaomaotou31-blog' + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/avatar.png" alt="xiaomaotou31"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">xiaomaotou31</p><p class="is-size-6 is-block">一个普通学生</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Shandong Jinan</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">38</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">0</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">6</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/withouthead" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/withouthead"><i class="fab fa-github"></i></a></div></div></div><!--!--><!--!--><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-06-14T15:46:23.000Z">2022-06-14</time></p><p class="title"><a href="/2022/06/14/redis%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0%E7%AC%94%E8%AE%B0-%E4%B8%80/">redis设计与实现笔记(一)</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-28T15:43:53.000Z">2022-05-28</time></p><p class="title"><a href="/2022/05/28/CMU15-445%E7%AC%94%E8%AE%B0-%E5%8D%81%E5%85%AD/">CMU15-445笔记(十六)</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-28T10:16:27.000Z">2022-05-28</time></p><p class="title"><a href="/2022/05/28/CMU-15-445%E7%AC%94%E8%AE%B0-%E5%8D%81%E4%BA%94/">CMU-15-445笔记(十五) 基于锁的协议</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-22T07:55:33.000Z">2022-05-22</time></p><p class="title"><a href="/2022/05/22/CMU-15-445%E7%AC%94%E8%AE%B0-%E5%8D%81%E5%9B%9B/">CMU-15-445笔记(十四)</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-21T03:10:37.000Z">2022-05-21</time></p><p class="title"><a href="/2022/05/21/CMU-15-445%E7%AC%94%E8%AE%B0-%E5%8D%81%E4%B8%89/">CMU-15-445笔记(十三)</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2022/06/"><span class="level-start"><span class="level-item">六月 2022</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/05/"><span class="level-start"><span class="level-item">五月 2022</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/04/"><span class="level-start"><span class="level-item">四月 2022</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/01/"><span class="level-start"><span class="level-item">一月 2022</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/11/"><span class="level-start"><span class="level-item">十一月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/10/"><span class="level-start"><span class="level-item">十月 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/09/"><span class="level-start"><span class="level-item">九月 2021</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/08/"><span class="level-start"><span class="level-item">八月 2021</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/07/"><span class="level-start"><span class="level-item">七月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/CMU-15-445/"><span class="tag">CMU-15-445</span><span class="tag">20</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MIT6-824/"><span class="tag">MIT6.824</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/OS/"><span class="tag">OS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/bug/"><span class="tag">bug</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/redis/"><span class="tag">redis</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"><span class="tag">数据库</span><span class="tag">3</span></a></div></div></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="小毛头31的博客" height="28"></a><p class="is-size-7"><span>&copy; 2022 xiaomaotou31</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>
